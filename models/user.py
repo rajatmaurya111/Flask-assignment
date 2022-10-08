@@ -1,7 +1,7 @@
 from pickle import GET
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
-from marshmallow import Schema, fields, validate, ValidationError
+from marshmallow import Schema, fields, validate, ValidationError, post_load
 from datetime import datetime
 
 db = SQLAlchemy()
@@ -48,6 +48,10 @@ class UserSchema(Schema):
     # class Meta:
     #     fields = ("name", "email")
     #     model = User
+
+    @post_load
+    def make_user(self,data, **kwargs):
+        return User(**data)
 
 # in_date = {"name":"a", "permission":"admin", "age":21}
 

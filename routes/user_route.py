@@ -8,7 +8,6 @@
 # def s():
 #     return "This is the test page"
 
-from hashlib import new
 from flask import jsonify
 from flask_restful import Resource, request
 from models.user import User, user_schema, users_schema
@@ -19,11 +18,13 @@ from marshmallow import Schema, fields, validate, ValidationError
 #         return {"w":"This is test page"}
 
 class user(Resource):
-    def get(self, id):
-        guide = User.query.get(id)
-        return user_schema.jsonify(guide)
+    # def get(self, id):
+    #     guide = User.query.get(id)
+    #     return user_schema.jsonify(guide)
     def post(self):
-        print("request", request.json)
+        # print("request", request.json)
+
+
         # name = request.json['name']
         # email = request.json['email']
 
@@ -31,19 +32,18 @@ class user(Resource):
 
        
         try:
-            data = user_schema.load(request.json)
-            new_user = User(**data)
+            new_user = user_schema.load(request.json)
             new_user.create()
-            print(data)
+            # print(data)
+            print(new_user, type(new_user))
+            return jsonify(user_schema.dump(new_user))
 
-
-            return jsonify(data)
+            
 
 
         except ValidationError as err:
             print("error", err.messages)
-            
-        return "Error"
+            return "Error occured"
 
         # new_user.create()
 
