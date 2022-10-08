@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 
 from models.user import db, ma
-from routes.test_page import user, users
+from routes.user_route import user, users
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -21,9 +21,11 @@ def create_app(test_config=None):
 
     # sample model
     db.init_app(app)
-    ma.init_app(app)
+    # ma.init_app(app)
     
-    with app.app_context():
+
+    # what is app.app.context?
+    with app.app_context(): 
         db.create_all() 
 
     #using guide route
