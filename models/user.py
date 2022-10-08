@@ -12,6 +12,10 @@ class User(db.Model):
     def __init__(self, title, content):
         self.title = title
         self.content = content
+    
+    def commit(self):
+        db.session.add(self)
+        db.session.commit()
 
 
 

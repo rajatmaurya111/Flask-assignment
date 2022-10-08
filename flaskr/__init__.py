@@ -7,7 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 
 from models.user import db, ma
-from routes.test_page import test_page
+from routes.test_page import user, users
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
@@ -27,11 +27,12 @@ def create_app(test_config=None):
         db.create_all() 
 
     #using guide route
-    api.add_resource(test_page, '/')
-    
+    api.add_resource(user, '/user/<int:id>', '/user')
+    api.add_resource(users, '/users')
     
 
-    app.url_map()
+    print(app.url_map)
+
 
     # if __name__ == '__main__':
     #     app.run(debug=True)

@@ -8,16 +8,35 @@
 # def s():
 #     return "This is the test page"
 
-from flask_restful import Resource
-from models.user import User, user_schema
+from hashlib import new
+from flask_restful import Resource, request
+from models.user import User, user_schema, users_schema
 
 class test_page(Resource):
     def get(self):
         return {"w":"This is test page"}
 
-class guide(Resource):
+class user(Resource):
+    def get(self, id):
+        guide = User.query.get(id)
+        return user_schema.jsonify(guide)
+    def post(self):
+        title = request.json['title']
+        content = request.json['content']
+
+        new_guide = User(title, content)
+
+        # db.session.add(new_guide)
+        # db.session.commit()
+        new_guide.commit()
+
+        guide = User.query.get(new_guide.id)
+
+        return user_schema.jsonify(guide)
+
+class users(Resource):
     def get(self):
-        print("Hi")
-        # guide = User.query.get(id)
-        # return user_schema.jsonify(guide)
-        return {"HI":"how"}
+        all_guides = User.query.all()
+    
+        result = users_schema.dump(all_guides)
+        return result
