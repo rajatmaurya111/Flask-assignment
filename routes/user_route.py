@@ -33,7 +33,7 @@ class user(Resource):
        
         try:
             new_user = user_schema.load(request.json)
-            new_user.create()
+            new_user = new_user.create()
             # print(data)
             print(new_user, type(new_user))
             return jsonify(user_schema.dump(new_user))

@@ -1,4 +1,4 @@
-from pickle import GET
+from doctest import debug_script
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, fields, validate, ValidationError, post_load
@@ -7,8 +7,8 @@ from datetime import datetime
 db = SQLAlchemy()
 ma = Marshmallow()
 
-class User(db.Model):
-    __tablename_= "user"
+class Restaurant(db.Model):
+    __tablename_= "restaurant"
 
     __id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
@@ -17,10 +17,9 @@ class User(db.Model):
         db.DateTime, default=datetime.utcnow,
         nullable=False
     )
-    city = db.Column(db.String(100))
-    Zipcode = db.Column(db.Integer)
-    Balance = db.Column(db.Integer)
-
+    address = db.Column(db.String(100))
+    type =db.Column(db.String(100))
+    description = db.Column(db.String(100))
 
 
     # def __init__(self, name, email):
@@ -38,13 +37,13 @@ class User(db.Model):
     def get_id(self):
         return self.__id
 
-class UserSchema(Schema):
+class RestaurantSchema(Schema):
     
     name = fields.Str(validate=validate.Length(min=2))
     email = fields.Str(validate=validate.Length(min=1))
-    created_at = fields.Str()
+    # created_at = fields.Str()
     city = fields.Str()
-    Zipcode = fields.Int()
+    address = fields.Str()
     Balance = fields.Int()
     # age = fields.Int(validate=validate.Range(min=18, max=40))
 
@@ -55,8 +54,8 @@ class UserSchema(Schema):
     #     model = User
 
     @post_load
-    def make_user(self,data, **kwargs):
-        return User(**data)
+    def make_restaurant(self, data, **kwargs):
+        return Restaurant(**data)
 
 # in_date = {"name":"a", "permission":"admin", "age":21}
 
@@ -65,5 +64,5 @@ class UserSchema(Schema):
 # except ValidationError as err:
 #     print(err.messages)
 
-user_schema = UserSchema()
-users_schema = UserSchema(many=True)
+restaurant_schema = RestaurantSchema()
+restaurants_schema = RestaurantSchema(many=True)
