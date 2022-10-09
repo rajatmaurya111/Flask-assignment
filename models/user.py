@@ -1,4 +1,4 @@
-from pickle import GET
+from asyncore import read
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, fields, validate, ValidationError, post_load
@@ -17,6 +17,7 @@ class User(db.Model):
         db.DateTime, default=datetime.utcnow,
         nullable=False
     )
+    # type = db.Column(db.String(100), default="normal-user")
     city = db.Column(db.String(100))
     Zipcode = db.Column(db.Integer)
     Balance = db.Column(db.Integer)
@@ -32,6 +33,15 @@ class User(db.Model):
         db.session.commit()
         return self
 
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+
+    # @classmethod
+    # def save(self):
+    #     db.session.commit()
+    
+
     def __repr__(self):
         return f"{self.__id}"
 
@@ -39,17 +49,18 @@ class User(db.Model):
         return self.__id
 
 class UserSchema(Schema):
-    
+    # __id = fields.Int()
+    # __id = fields.Int(dump_only=True)
     name = fields.Str(validate=validate.Length(min=2))
-    email = fields.Str(validate=validate.Length(min=1))
+    email = fields.Str(validate=validate.Email())
+    type = fields.Str(validate=validate.OneOf(["normal-user", "restraunt-owner"]))
     created_at = fields.Str()
-    city = fields.Str()
+    city = fields.Str(validate=validate.Length(min=2))
     Zipcode = fields.Int()
-    Balance = fields.Int()
+    Balance = fields.Int(validate=validate.Range(min=0))
+
     # age = fields.Int(validate=validate.Range(min=18, max=40))
-
     # permission = fields.Str(validate=validate.OneOf(["read", "write", "admin"]))
-
     # class Meta:
     #     fields = ("name", "email")
     #     model = User
@@ -58,8 +69,8 @@ class UserSchema(Schema):
     def make_user(self,data, **kwargs):
         return User(**data)
 
-# in_date = {"name":"a", "permission":"admin", "age":21}
 
+# in_date = {"name":"a", "permission":"admin", "age":21}
 # try:
 #     print(UserSchema().load(in_date))
 # except ValidationError as err:
