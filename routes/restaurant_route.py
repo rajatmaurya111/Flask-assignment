@@ -1,10 +1,12 @@
 
+from multiprocessing.spawn import import_main_path
 from symbol import import_from
 from flask import jsonify, make_response
 from flask_restful import Resource, request
-from models.restaurant import Restaurant, RestaurantSchema, restaurant_schema
+from models_schemas.models.restaurant_model import Restaurant
+from models_schemas.schemas.restaurant_schema import RestaurantSchema, restaurant_schema
 # , db as r_db
-from models import db
+from models_schemas import db
 from marshmallow import Schema, fields, validate, ValidationError
 from constants.http_status_code import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 

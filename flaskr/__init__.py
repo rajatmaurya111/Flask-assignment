@@ -8,7 +8,7 @@ from flask_marshmallow import Marshmallow
 
 # from models.user import db as user_db
 # from models.restaurant import db as restaurant_db
-from models import db
+from models_schemas import db
 
 from routes.user_route import UserView, UsersView
 from routes.restaurant_route import RestaurantRoute

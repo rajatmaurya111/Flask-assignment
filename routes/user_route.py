@@ -1,7 +1,14 @@
 from flask import jsonify, make_response
 from flask_restful import Resource, request
-from models.user import User, UserSchema, user_schema, users_schema
-from models import db
+
+from models_schemas import db
+
+# import models
+from models_schemas.models.user_model import User
+
+# import schema
+from models_schemas.schemas.user_schema import UserSchema, user_schema, users_schema
+
 from marshmallow import Schema, fields, validate, ValidationError
 from constants.http_status_code import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 
@@ -19,6 +26,7 @@ class UserView(Resource):
         if current_user is None:
             return make_response({'message': "user not exist"}, HTTP_400_BAD_REQUEST)
 
+        print("UserView", UserSchema().dump(current_user))
         if current_user.status:
             return make_response(jsonify(user_schema.dump(current_user)), HTTP_200_OK)
         else:
@@ -34,7 +42,7 @@ class UserView(Resource):
 
         try:
             new_user = user_schema.load(request.json).create()
-            return make_response({"result":user_schema.dump(new_user)}, HTTP_201_CREATED)
+            return make_response(user_schema.dump(new_user), HTTP_201_CREATED)
 
         except ValidationError as err:
             return make_response({"error": err.messages}, HTTP_400_BAD_REQUEST)
@@ -43,8 +51,6 @@ class UserView(Resource):
     def delete(self, id):
         if User.query.get(id) is None:
             return make_response({'message': "user not exist"}, HTTP_400_BAD_REQUEST)
-
-
 
         try:
             current_user = User.query.get(id)
