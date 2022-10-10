@@ -1,13 +1,8 @@
-import imp
 import os
 
 from flask import Flask
 from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
-from flask_marshmallow import Marshmallow
 
-# from models.user import db as user_db
-# from models.restaurant import db as restaurant_db
 from models_schemas import db
 
 from routes.user_route import UserView, UsersView
@@ -21,23 +16,11 @@ def create_app(test_config=None):
     basedir = os.path.abspath(os.path.dirname(__file__))
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'app.sqlite')
-    # db = SQLAlchemy(app)
-    # ma = Marshmallow(app)
 
-    # sample model
-    # user_db.init_app(app)
-    # restaurant_db.init_app(app)
     db.init_app(app)
-    # ma.init_app(app)
-    
 
-    # what is app.app.context?
     with app.app_context(): 
         db.create_all()
-        # user_db.create_all() 
-        # restaurant_db.create_all()
-        
-        
 
     #using guide route
     api.add_resource(UserView, '/user/<int:id>', '/user')
@@ -45,10 +28,7 @@ def create_app(test_config=None):
     api.add_resource(RestaurantRoute, '/restaurant/<int:id>', '/restaurant')
     
 
-    print(app.url_map)
-
-
-    # if __name__ == '__main__':
-    #     app.run(debug=True)
+    # to print mapped url
+    # print(app.url_map)
 
     return app

@@ -1,12 +1,6 @@
-# from flask_sqlalchemy import SQLAlchemy
-# from flask_marshmallow import Marshmallow
 from datetime import datetime
 
-# from models.restaurant import Restaurant
-
 from models_schemas import db
-# from models_schemas.schemas.restaurant_schema import RestaurantSchema
-# db = SQLAlchemy()
 
 class User(db.Model):
     __tablename_= "users"
@@ -27,11 +21,6 @@ class User(db.Model):
     #Relation with restaurant model
     restaurants = db.relationship('Restaurant', backref='user')
 
-
-    # def __init__(self, name, email):
-    #     self.name = name
-    #     self.email = email
-
     def create(self):
         db.session.add(self)
         db.session.commit()
@@ -41,10 +30,6 @@ class User(db.Model):
         db.session.delete(self)
         db.session.commit()
 
-    # @classmethod
-    # def save(self):
-    #     db.session.commit()
-    
 
     def __repr__(self):
         return f"{self.__id}"

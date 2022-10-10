@@ -1,14 +1,13 @@
-from pkgutil import ImpImporter
 from models_schemas import ma
-from marshmallow import Schema, fields, validate, ValidationError, post_load
+
+from marshmallow import Schema, fields, validate, post_load
+
 from models_schemas.models.user_model import User
 from models_schemas.schemas.restaurant_schema import RestaurantSchema
 
-class UserSchema(ma.Schema):
-    # __id = fields.Int()
-    # id = fields.Int(load_only=True)
+class UserSchema(ma.Schema): 
     name = fields.Str(validate=validate.Length(min=2))
-    email = fields.Str(validate=validate.Email())
+    email = fields.Str(validate=validate.Email(), required=True)
     type = fields.Str(validate=validate.OneOf(["normal-user", "restraunt-owner"]))
     created_at = fields.Str()
     city = fields.Str(validate=validate.Length(min=2))
@@ -27,12 +26,6 @@ class UserSchema(ma.Schema):
     def make_user(self,data, **kwargs):
         return User(**data)
 
-
-# in_date = {"name":"a", "permission":"admin", "age":21}
-# try:
-#     print(UserSchema().load(in_date))
-# except ValidationError as err:
-#     print(err.messages)
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
