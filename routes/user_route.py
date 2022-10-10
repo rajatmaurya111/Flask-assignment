@@ -1,16 +1,7 @@
-# from flask import Blueprint, render_template, abort
-
-
-# test_page = Blueprint("test_page", __name__, template_folder="routes")
-
-# # @test_page.route("/")
-# @test_page.route("/test_page")
-# def s():
-#     return "This is the test page"
-
 from flask import jsonify, make_response
 from flask_restful import Resource, request
-from models.user import User, UserSchema, user_schema, db
+from models.user import User, UserSchema, user_schema, users_schema
+from models import db
 from marshmallow import Schema, fields, validate, ValidationError
 from constants.http_status_code import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_201_CREATED
 
@@ -18,68 +9,76 @@ from constants.http_status_code import HTTP_200_OK, HTTP_400_BAD_REQUEST, HTTP_2
 #     def get(self):z
 #         return {"w":"This is test page"}
 
-class UserRoute(Resource):
-    '''get user details'''
+class UserView(Resource):
+    '''fetch a user'''
     def get(self, id):
         # guide = User.query.get(id)
         # return user_schema.jsonify(guide)
         current_user = User.query.get(id)
-        return make_response(jsonify(user_schema.dump(current_user)), HTTP_200_OK)
+        # check if user exist
+        if current_user is None:
+            return make_response({'message': "user not exist"}, HTTP_400_BAD_REQUEST)
+
+        if current_user.status:
+            return make_response(jsonify(user_schema.dump(current_user)), HTTP_200_OK)
+        else:
+            return make_response({"message":"user not active"}, HTTP_400_BAD_REQUEST)
+
 
     '''create user'''
     def post(self):
+        # user_toadd = User.query.get(user_schema.load(request.json).id)
+        # # check if user exist
+        # if user_toadd:
+        #     return make_response({'message': "user already exist"}, HTTP_400_BAD_REQUEST)
+
         try:
-            new_user = user_schema.load(request.json)
-            new_user = new_user.create()
-            print(new_user.get_id())
-            # print(data)
-            # new_user.id = new_user.get_id()
-            print(new_user, type(new_user))
+            new_user = user_schema.load(request.json).create()
             return make_response({"result":user_schema.dump(new_user)}, HTTP_201_CREATED)
 
         except ValidationError as err:
-            # print("error", err.messages)
             return make_response({"error": err.messages}, HTTP_400_BAD_REQUEST)
 
-
+    '''set the user to inactive'''
     def delete(self, id):
+        if User.query.get(id) is None:
+            return make_response({'message': "user not exist"}, HTTP_400_BAD_REQUEST)
+
+
+
         try:
             current_user = User.query.get(id)
-            current_user.delete()  
+            current_user.status = False
+            # current_user.delete()  
+            db.session.commit()
             return make_response({"message": "success"}, HTTP_200_OK)
         except:
             return make_response({"status":"failed"}, HTTP_400_BAD_REQUEST)
 
+    '''update a user'''
     def put(self, id):
+        # current_user = User.query.get(id)
+        if User.query.get(id) is None:
+            return make_response({'message': "user not exist"}, HTTP_400_BAD_REQUEST)
+
         try:
-            # curr_user = User.query.get(id)
-            try:
-                user_schema.load(request.json)
-            except ValidationError as err:
-                return make_response({"error": err.messages}, HTTP_400_BAD_REQUEST)
-            User.query.filter_by(_User__id=id).update((request.get_json()))
-            # User.save()
-            # print(type(updated_user))
-            db.session.commit()
-            
+            user_schema.load(request.json)
+        except ValidationError as err:
+            return make_response({"error": err.messages}, HTTP_400_BAD_REQUEST)
 
-            # update_data = request.get_json()
-            # curr_user.save()
+        User.query.filter_by(id=id).update((request.get_json()))
+        db.session.commit()
+        
 
-            # current_user_data. = "john"
-            # return jsonify(user_schema.dump(current_user))
-            updated_user_data = user_schema.dump(User.query.get(id))
-            # print(user_schema.dump(User.query.get(id)))
-
-            return make_response({"result": updated_user_data},  HTTP_200_OK)
-        except:
-            make_response({"status": "Error Occured"}, HTTP_400_BAD_REQUEST)
+        # update_data = request.get_json()
+        updated_user_data = user_schema.dump(User.query.get(id))
+        return make_response({"result": updated_user_data},  HTTP_200_OK)
+        # except:
+        #     make_response({"status": "Error Occured"}, HTTP_400_BAD_REQUEST)
 
 
-
-# class users(Resource):
-#     def get(self):
-#         all_guides = User.query.all()
-    
-#         result = users_schema.dump(all_guides)
-#         return result
+'''fetch all the users'''
+class UsersView(Resource):
+    def get(self):
+        users = User.query.all()
+        return make_response(jsonify(users_schema.dump(users)), HTTP_200_OK)

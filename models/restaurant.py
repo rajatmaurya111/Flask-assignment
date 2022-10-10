@@ -1,16 +1,17 @@
-from dataclasses import field
-from doctest import debug_script
-from os import O_WRONLY
 from flask_sqlalchemy import SQLAlchemy
 from flask_marshmallow import Marshmallow
 from marshmallow import Schema, fields, validate, ValidationError, post_load
 from datetime import datetime
 
-db = SQLAlchemy()
-ma = Marshmallow()
+from pkg_resources import require
+# from models.user import User
+
+# db = SQLAlchemy()
+from models import db
+from models.user import User
 
 class Restaurant(db.Model):
-    __tablename_= "restaurant"
+    __tablename_= "restaurants"
 
     __id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
@@ -23,9 +24,12 @@ class Restaurant(db.Model):
     address = db.Column(db.String(100))
     menu =db.Column(db.String(100))
     description = db.Column(db.String(100))
-    owner = db.Column(db.String(100), nullable=False)
+    status = db.Column(db.Boolean(), nullable=False, default=True ) 
+    # owner = db.Column(db.String(100), nullable=False)
 
-
+    #Relation with User
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    # user = db.relationship("User")
 
     # def __init__(self, name, email):
     #     self.name = name
@@ -37,12 +41,18 @@ class Restaurant(db.Model):
         return self
 
     def __repr__(self):
-        return f"{self.__id}"
+        return f"{self.id}"
 
     def get_id(self):
-        return self.__id
+        return self.id
+
+
 
 class RestaurantSchema(Schema):
+    def validate_user_id(user_id):
+        if User.query.get(user_id) is None:
+            raise ValidationError("owner does not exit in User")
+
     
     name = fields.Str(validate=validate.Length(min=2))
     email = fields.Str(validate=validate.Length(min=1))
@@ -50,7 +60,11 @@ class RestaurantSchema(Schema):
     address = fields.Str()
     Balance = fields.Int()
     owner = fields.Str()
+    status = fields.Bool(load_only=True)
+    user_id = fields.Int(validate=validate_user_id, require=True)
+
     
+
     # age = fields.Int(validate=validate.Range(min=18, max=40))
 
     # permission = fields.Str(validate=validate.OneOf(["read", "write", "admin"]))
