@@ -32,3 +32,4 @@ def create_app(test_config=None):
     # print(app.url_map)
 
     return app
+    
