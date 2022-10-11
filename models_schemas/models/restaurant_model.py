@@ -19,7 +19,6 @@ class Restaurant(db.Model):
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)  
-    # owner = db.Column(db.String(100))
     created_at = db.Column(
         db.DateTime, default=datetime.utcnow,
         nullable=False
@@ -28,17 +27,9 @@ class Restaurant(db.Model):
     menu =db.Column(db.String(100))
     description = db.Column(db.String(100))
     status = db.Column(db.Boolean(), nullable=False, default=True ) 
-    # owner = db.Column(db.String(100), nullable=False)
 
     #Relation with User
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    # user = db.relationship("User")
-
-    # def __init__(self, name, email):
-    #     self.name = name
-    #     self.email = email
-
-   
 
     def create(self):
         db.session.add(self)
@@ -47,6 +38,3 @@ class Restaurant(db.Model):
 
     def __repr__(self):
         return f"{self.id}"
-
-    def get_id(self):
-        return self.id
