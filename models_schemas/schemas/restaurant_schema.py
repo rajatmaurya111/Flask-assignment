@@ -20,7 +20,7 @@ class RestaurantSchema(ma.Schema):
 
     class Meta:
         model = Restaurant
-        fields = ("id", "name", "email", "address","user_id")
+        fields = ("id", "name", "email", "address", "menu", "user_id")
 
     @post_load
     def make_restaurant(self, data, **kwargs):

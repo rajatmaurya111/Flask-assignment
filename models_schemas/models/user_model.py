@@ -16,8 +16,8 @@ class User(db.Model):
     type = db.Column(db.String(100), default="normal-user")
     city = db.Column(db.String(100))
     status = db.Column(db.Boolean(), nullable=False, default=True ) 
-    Zipcode = db.Column(db.Integer)
-    Balance = db.Column(db.Integer)
+    zipcode = db.Column(db.Integer)
+    balance = db.Column(db.Integer)
 
     #Relation with restaurant model
     restaurants = db.relationship('Restaurant', backref='user')

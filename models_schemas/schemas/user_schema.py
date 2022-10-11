@@ -14,13 +14,13 @@ class UserSchema(ma.Schema):
     created_at = fields.Str()
     password = fields.Str(validate=validate.Length(min=consts.MIN_PASSWORD_LENGTH), load_only=True)
     city = fields.Str()
-    Zipcode = fields.Int()
-    Balance = fields.Int(validate=validate.Range(min=consts.MIN_BALANCE))
+    zipcode = fields.Int()
+    balance = fields.Int(validate=validate.Range(min=consts.MIN_BALANCE))
     status = fields.Bool(load_only=True)
     
     class Meta:
         model = User
-        fields = ("id", "name", "email", "type", "city", "Zipcode", "Balance", "restaurants", "password")
+        fields = ("id", "name", "email", "type", "city", "zipcode", "balance", "restaurants", "password")
         
  
     restaurants = fields.List(fields.Nested(RestaurantSchema))
