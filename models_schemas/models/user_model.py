@@ -36,4 +36,3 @@ class User(db.Model):
 
     def get_id(self):
         return self.__id
-        

@@ -75,4 +75,3 @@ class UsersView(Resource):
     def get(self):
         users = User.query.all()
         return make_response(jsonify(users_schema.dump(users)), http_status_code.HTTP_200_OK)
-        
