@@ -20,8 +20,8 @@ class UserView(Resource):
         if current_user is None:
             return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_400_BAD_REQUEST)
 
-        # print("UserView", UserSchema().dump(current_user))
-        if current_user.status:
+
+        if current_user.active:
             return make_response(jsonify(user_schema.dump(current_user)), http_status_code.HTTP_200_OK)
         else:
             return make_response(consts.USER_NOT_ACTIVE, http_status_code.HTTP_400_BAD_REQUEST)
@@ -43,13 +43,12 @@ class UserView(Resource):
     '''set the user to inactive'''
     def delete(self, id):
         if User.query.get(id) is None:
-            return make_response({consts.USER_NOT_EXIST}, http_status_code.HTTP_400_BAD_REQUEST)
-
+            return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_400_BAD_REQUEST)
 
         current_user = User.query.get(id)
-        current_user.status = False
-        # current_user.delete()  
-        db.session.commit()
+        current_user.active = False
+        current_user.save()
+
         return make_response(consts.REQUEST_SUCCESS, http_status_code.HTTP_200_OK)
 
     '''update a user'''

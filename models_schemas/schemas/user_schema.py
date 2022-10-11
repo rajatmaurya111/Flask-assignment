@@ -1,7 +1,6 @@
-from json import load
 from models_schemas import ma
 
-from marshmallow import Schema, fields, validate, post_load
+from marshmallow import fields, validate, post_load
 
 from models_schemas.models.user_model import User
 from models_schemas.schemas.restaurant_schema import RestaurantSchema
@@ -16,12 +15,11 @@ class UserSchema(ma.Schema):
     city = fields.Str()
     zipcode = fields.Int()
     balance = fields.Int(validate=validate.Range(min=consts.MIN_BALANCE))
-    status = fields.Bool(load_only=True)
+    active = fields.Bool(load_only=True)
     
     class Meta:
         model = User
         fields = ("id", "name", "email", "type", "city", "zipcode", "balance", "restaurants", "password")
-        
  
     restaurants = fields.List(fields.Nested(RestaurantSchema))
  

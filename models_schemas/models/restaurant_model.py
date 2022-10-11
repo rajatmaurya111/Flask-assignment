@@ -26,7 +26,7 @@ class Restaurant(db.Model):
     address = db.Column(db.String(100))
     menu =db.Column(db.String(100))
     description = db.Column(db.String(100))
-    status = db.Column(db.Boolean(), nullable=False, default=True ) 
+    active = db.Column(db.Boolean(), nullable=False, default=True ) 
 
     #Relation with User
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)

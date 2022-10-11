@@ -15,7 +15,7 @@ class RestaurantSchema(ma.Schema):
     name = fields.Str(validate=validate.Length(min=consts.MIN_NAME_LENGTH))
     email = fields.Str(validate=validate.Email())
     address = fields.Str()
-    status = fields.Bool(load_only=True)
+    active = fields.Bool(load_only=True)
     user_id = fields.Int(validate=validate_user_id, require=True)
 
     class Meta:
