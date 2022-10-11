@@ -7,7 +7,7 @@ from flask_restful import Api
 
 from models_schemas import db
 
-from routes.user_route import UserView, UsersView
+from views.user_route import UserView, UsersView
 from models_schemas.models.user_model import User
 from models_schemas.models.restaurant_model import Restaurant
 
