@@ -12,6 +12,7 @@ class User(db.Model):
         db.DateTime, default=datetime.utcnow,
         nullable=False
     )
+    password = db.Column(db.String(100), nullable=False)
     type = db.Column(db.String(100), default="normal-user")
     city = db.Column(db.String(100))
     status = db.Column(db.Boolean(), nullable=False, default=True ) 
