@@ -13,24 +13,27 @@ from marshmallow import ValidationError
 from constants import consts, http_status_code
 
 class UserView(Resource):
-    '''fetch a user'''
+    
     def get(self, id): 
+        """fetch a user"""
+
         current_user = User.query.get(id)
         # check if user exist
-        if current_user is None:
-            return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_400_BAD_REQUEST)
+        if current_user is None: 
+            return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_404_NOT_FOUND)
 
 
         if current_user.active:
             return make_response(jsonify(user_schema.dump(current_user)), http_status_code.HTTP_200_OK)
         else:
-            return make_response(consts.USER_NOT_ACTIVE, http_status_code.HTTP_400_BAD_REQUEST)
+            return make_response(consts.USER_NOT_ACTIVE, http_status_code.HTTP_404_NOT_FOUND)
 
 
-    '''create user'''
+    
     def post(self):
+        """create user"""
         #chek if user already exist
-        if User.query.filter_by(email=request.json["email"]).first():
+        if  User.query.filter_by(email=request.json.get("email")).first():
             return make_response(consts.USER_ALREADY_EXIST, http_status_code.HTTP_400_BAD_REQUEST)
 
         try:
@@ -40,37 +43,39 @@ class UserView(Resource):
         except ValidationError as err:
             return make_response({consts.ERROR_MESSAGE_KEY: err.messages}, http_status_code.HTTP_400_BAD_REQUEST)
 
-    '''set the user to inactive'''
     def delete(self, id):
-        if User.query.get(id) is None:
+        """set the user to inactive"""
+        current_user = User.query.get(id)
+        if current_user is None:
             return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_400_BAD_REQUEST)
 
-        current_user = User.query.get(id)
         current_user.active = False
         current_user.save()
-
+        
         return make_response(consts.REQUEST_SUCCESS, http_status_code.HTTP_200_OK)
 
-    '''update a user'''
+    
     def put(self, id):
-        # current_user = User.query.get(id)
+        """update a user"""
         if User.query.get(id) is None:
-            return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_400_BAD_REQUEST)
+            return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_404_NOT_FOUND)
 
         try:
-            user_schema.load(request.json)
+            user_schema.validate(request.json)
         except ValidationError as err:
             return make_response({consts.ERROR_MESSAGE_KEY: err.messages}, http_status_code.HTTP_400_BAD_REQUEST)
 
-        User.query.filter_by(id=id).update((request.get_json()))
+        User.query.filter_by(id=id).update(request.get_json())
         db.session.commit()
         
         updated_user_data = user_schema.dump(User.query.get(id))
         return make_response({consts.UPDATED_MESSAGE_KEY: updated_user_data},  http_status_code.HTTP_200_OK)
 
 
-'''fetch all the users'''
 class UsersView(Resource):
+    """Users view"""
+    
     def get(self):
+        '''fetch all the users'''
         users = User.query.all()
         return make_response(jsonify(users_schema.dump(users)), http_status_code.HTTP_200_OK)

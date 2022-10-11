@@ -7,13 +7,13 @@ from flask_restful import Api
 
 from models_schemas import db
 
-from views.user_route import UserView, UsersView
+from views.user_view import UserView, UsersView
 from models_schemas.models.user_model import User
 from models_schemas.models.restaurant_model import Restaurant
 
 
 def create_app(test_config=None):
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(__name__)
     api = Api(app)
 
 

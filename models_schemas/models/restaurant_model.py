@@ -1,6 +1,7 @@
 # from flask_sqlalchemy import SQLAlchemy
 # from flask_marshmallow import Marshmallow
 from datetime import datetime
+from enum import unique
 
 # from pkg_resources import require
 # from models.user import User
@@ -14,11 +15,12 @@ from models_schemas import db
 # from models.user import User
 
 class Restaurant(db.Model):
+    """Restaurant Model"""
     __tablename_= "restaurants"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), nullable=False)
-    email = db.Column(db.String(100), nullable=False)  
+    email = db.Column(db.String(100), nullable=False, unique=True)  
     created_at = db.Column(
         db.DateTime, default=datetime.utcnow,
         nullable=False

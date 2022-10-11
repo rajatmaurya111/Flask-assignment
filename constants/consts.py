@@ -22,3 +22,6 @@ MAX_CITY_LENGHT = 100
 
 USER_TYPES = ["normal-user", "restraunt-owner"]
 USER_TYPES_DEFAULT = USER_TYPES[0]
+
+
+ZIPCODE_LENGTH = 6
