@@ -5,16 +5,17 @@ from marshmallow import Schema, fields, validate, post_load
 
 from models_schemas.models.user_model import User
 from models_schemas.schemas.restaurant_schema import RestaurantSchema
+from  constants import consts
 
 class UserSchema(ma.Schema): 
-    name = fields.Str(validate=validate.Length(min=2))
+    name = fields.Str(validate=validate.Length(min=consts.MIN_NAME_LENGTH))
     email = fields.Str(validate=validate.Email(), required=True)
-    type = fields.Str(validate=validate.OneOf(["normal-user", "restraunt-owner"]))
+    type = fields.Str(validate=validate.OneOf(consts.USER_TYPES))
     created_at = fields.Str()
-    password = fields.Str(validate=validate.Length(min=6), load_only=True)
-    city = fields.Str(validate=validate.Length(min=2))
+    password = fields.Str(validate=validate.Length(min=consts.MIN_PASSWORD_LENGTH), load_only=True)
+    city = fields.Str()
     Zipcode = fields.Int()
-    Balance = fields.Int(validate=validate.Range(min=0))
+    Balance = fields.Int(validate=validate.Range(min=consts.MIN_BALANCE))
     status = fields.Bool(load_only=True)
     
     class Meta:

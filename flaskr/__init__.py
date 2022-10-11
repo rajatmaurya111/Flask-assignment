@@ -27,9 +27,5 @@ def create_app(test_config=None):
     api.add_resource(UserView, '/user/<int:id>', '/user')
     api.add_resource(UsersView, '/users')
     api.add_resource(RestaurantRoute, '/restaurant/<int:id>', '/restaurant')
-    
-
-    # to print mapped url
-    # print(app.url_map)
 
     return app

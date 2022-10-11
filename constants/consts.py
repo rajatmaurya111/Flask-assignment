@@ -9,3 +9,11 @@ REQUEST_FAILED = {"message": "failed"}
 
 ERROR_MESSAGE_KEY = "error_message"
 UPDATED_MESSAGE_KEY = "updated_data"
+
+
+MIN_PASSWORD_LENGTH = 6
+MIN_BALANCE = 0
+MIN_NAME_LENGTH = 1
+MAX_NAME_LENGTH = 100
+
+USER_TYPES = ["normal-user", "restraunt-owner"]
