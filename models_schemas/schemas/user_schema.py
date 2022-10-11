@@ -1,3 +1,4 @@
+from json import load
 from models_schemas import ma
 
 from marshmallow import Schema, fields, validate, post_load
@@ -10,7 +11,7 @@ class UserSchema(ma.Schema):
     email = fields.Str(validate=validate.Email(), required=True)
     type = fields.Str(validate=validate.OneOf(["normal-user", "restraunt-owner"]))
     created_at = fields.Str()
-    password = fields.Str(validate=validate.Length(min=6))
+    password = fields.Str(validate=validate.Length(min=6), load_only=True)
     city = fields.Str(validate=validate.Length(min=2))
     Zipcode = fields.Int()
     Balance = fields.Int(validate=validate.Range(min=0))
