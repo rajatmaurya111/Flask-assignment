@@ -1,3 +1,4 @@
+import email
 from flask import jsonify, make_response
 from flask_restful import Resource, request
 
@@ -16,19 +17,12 @@ class UserView(Resource):
     
     def get(self, id): 
         """fetch a user"""
-
-        current_user = User.query.get(id)
-        # check if user exist
-        if current_user is None: 
-            return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_404_NOT_FOUND)
-
+        current_user = User.query.get_or_404(id)
 
         if current_user.active:
             return make_response(jsonify(user_schema.dump(current_user)), http_status_code.HTTP_200_OK)
         else:
             return make_response(consts.USER_NOT_ACTIVE, http_status_code.HTTP_404_NOT_FOUND)
-
-
     
     def post(self):
         """create user"""
@@ -45,21 +39,16 @@ class UserView(Resource):
 
     def delete(self, id):
         """set the user to inactive"""
-        current_user = User.query.get(id)
-        if current_user is None:
-            return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_400_BAD_REQUEST)
-
+        current_user = User.query.get_or_404(id)
         current_user.active = False
         current_user.save()
         
         return make_response(consts.REQUEST_SUCCESS, http_status_code.HTTP_200_OK)
-
     
     def put(self, id):
         """update a user"""
-        if User.query.get(id) is None:
-            return make_response(consts.USER_NOT_EXIST, http_status_code.HTTP_404_NOT_FOUND)
-
+        User.query.get_or_404(id) 
+      
         try:
             user_schema.validate(request.json)
         except ValidationError as err:
@@ -74,7 +63,7 @@ class UserView(Resource):
 
 class UsersView(Resource):
     """Users view"""
-    
+
     def get(self):
         '''fetch all the users'''
         users = User.query.all()
