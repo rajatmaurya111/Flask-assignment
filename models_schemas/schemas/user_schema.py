@@ -19,9 +19,9 @@ class UserSchema(ma.Schema):
     balance = fields.Int(validate=validate.Range(min=consts.MIN_BALANCE))
     active = fields.Bool(load_only=True)    
     
-    # class Meta:
-    #     model = User
-    #     fields = ("id", "name", "email", "type", "city", "zipcode", "balance", "restaurants", "password")
+    class Meta:
+        model = User
+        fields = ("id", "name", "email", "type", "city", "zipcode", "balance", "restaurants", "password")
  
     restaurants = fields.List(fields.Nested(RestaurantSchema))
  
