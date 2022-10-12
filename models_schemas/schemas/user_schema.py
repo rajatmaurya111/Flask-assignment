@@ -12,7 +12,6 @@ class UserSchema(ma.Schema):
     name = fields.Str(validate=validate.Length(min=consts.MIN_NAME_LENGTH))
     email = fields.Str(validate=validate.Email(), required=True)
     type = fields.Str(validate=validate.OneOf(consts.USER_TYPES))
-    created_at = fields.Str()
     password = fields.Str(validate=validate.Length(min=consts.MIN_PASSWORD_LENGTH), load_only=True, required=True)
     city = fields.Str()
     zipcode = fields.Str(validate=validate.Length(equal=consts.ZIPCODE_LENGTH))
@@ -21,7 +20,7 @@ class UserSchema(ma.Schema):
     
     class Meta:
         model = User
-        fields = ("id", "name", "email", "type", "city", "zipcode", "balance", "restaurants", "password")
+        fields = ("id", "name", "email", "type", "created_at", "city", "zipcode", "balance", "restaurants", "password")
  
     restaurants = fields.List(fields.Nested(RestaurantSchema))
  

@@ -10,8 +10,6 @@ from enum import unique
 # db = SQLAlchemy()
 from models_schemas import db
 
-
-
 # from models.user import User
 
 class Restaurant(db.Model):
